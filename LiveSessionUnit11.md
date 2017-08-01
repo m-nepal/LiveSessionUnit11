@@ -1,0 +1,108 @@
+# LiveSessionUnit11Assignment
+M Nepal  
+July 30, 2017  
+
+
+## Introduction
+This is R markdown document for keeping track of assignment submitted for <a href="https://datascience.smu.edu/">**MSDS-6306@SMU**</a> as an example of  **Forecasting: principles and practice(FPP)**. 
+
+The **hsales** data is used for following analyis.
+
+### Library and packages
+Install and load fpp package using following code chunk in R.
+
+```r
+#install.packages("fpp")
+#Once installed, comment above line as you don't need to install package for each execution
+library(fpp)
+```
+# Questions for the assignment
+#### a) Plot the time series. Can you identify seasonal fluctuations and/or a trend? 
+
+```r
+data(hsales)
+plot(hsales)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+Looking the plot, we can see the presence of  both seasonal and trend fluctuations in the hsales data.
+
+#### b)	Use a classical decomposition to calculate the trend-cycle and seasonal indices. 
+
+```r
+fitd <- decompose(hsales)
+plot(fitd)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+#### c)	Do the results support the graphical interpretation from part (a)?
+Yes they do, If we see the Decomposition of additive time series plot, the decomposition clearly shows both seasonal and trend fluctions.
+
+#### d)	Compute and plot the seasonally adjusted data. 
+
+```r
+hsadj <- seasadj(fitd)
+plot(hsadj)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+#### e)	Change one observation to be an outlier (e.g., add 500 to one observation), and recompute the seasonally adjusted data. What is the effect of the outlier? 
+
+```r
+hsales2 <- ts(c(hsales[1:54],hsales[55]+200,hsales[56:191]),start=c(1996,1),frequency=12)
+plot(hsales2)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
+fitd2 <- decompose(hsales2)
+plot(fitd2)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
+hsadj2 <- seasadj(fitd2)
+plot(hsadj2)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
+
+The added outlier causes the house sales to change abruptly sharp at the middle where the outlier was added.
+
+#### f)	Does it make any difference if the outlier is near the end rather than in the middle of the time series?
+
+```r
+hsales3 <- ts(c(hsales[1:269],hsales[270]+500,hsales[271:275]),start=c(1973,1),frequency=12)
+plot(hsales3)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+Yes, it does.
+If we see the plot, the abrupt sharp changes  also moved to end as outlier moved to end.
+
+#### g)	Use STL to decompose the series
+
+```r
+fit <- stl(hsales, s.window=5)
+plot(fit)
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+#### one more plot
+
+```r
+plot(hsales, col="gray",
+     main="Sales of new one-family houses in the USA",
+     ylab="Number Sold", xlab="")
+lines(fit$time.series[,2],col="red",ylab="Number Sold")
+```
+
+![](LiveSessionUnit11_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+
